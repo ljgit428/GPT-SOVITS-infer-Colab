@@ -6,9 +6,11 @@ import requests
 import json
 import uuid
 
-# ⚠️ 这里的 URL 需要你在运行 Colab 后，找到类似于 https://xxxxx.gradio.live/ 的地址
-# 并根据其 API 文档填写具体的 endpoint (例如 /api/generate)
-COLAB_API_URL = "https://YOUR-COLAB-URL.gradio.live/api/generate" 
+# ==========================================
+# !!! 每次 Colab 启动后，将 ngrok 生成的地址填在这里 !!!
+# 注意：不要带最后的斜杠 /
+COLAB_API_BASE = "https://xxxx-xxxx.ngrok-free.app" 
+# ==========================================
 
 @csrf_exempt
 def generate_audio(request):
@@ -18,48 +20,50 @@ def generate_audio(request):
             text = data.get('text', '')
 
             if not text:
-                return JsonResponse({'error': 'Text is required'}, status=400)
+                return JsonResponse({'error': '内容不能为空'}, status=400)
 
-            # 1. 发送请求给 Colab API
-            # 注意：这里的数据结构取决于 Colab 具体的 API 定义
-            # 假设它接受 {"text": "..."} 并返回二进制音频流
-            # 如果是 Gradio，通常 payload 是 {"data": [text, ...]}
-            payload = {
+            # 1. 构造 GPT-SoVITS api_v2 的参数
+            # 注意：这里假设模型已经加载了默认的参考音频，或者不需要强制指定参考音频
+            # 如果需要更精细的控制（参考音频、语种等），需要在这里添加更多参数
+            params = {
                 "text": text,
-                "prompt": "[oral_2]", # 示例参数
-                "speed": 5
+                "text_lang": "zh",      # 强制输入为中文，可根据需要修改
+                "prompt_lang": "zh",    # 提示语语言
+                "top_k": 5,
+                "top_p": 1,
+                "temperature": 1,
+                # 如果你的模型必须需要参考音频路径，需要在这里传入 ref_audio_path
             }
             
-            print(f"Sending to Colab: {text}")
+            print(f"正在请求 Colab: {COLAB_API_BASE}/tts ... 内容: {text}")
             
-            # 发送请求
-            response = requests.post(COLAB_API_URL, json=payload, timeout=60)
+            # 2. 发送 GET 请求到 Colab (GPT-SoVITS 标准接口通常是 /tts)
+            response = requests.get(f"{COLAB_API_BASE}/tts", params=params, timeout=120)
 
             if response.status_code != 200:
-                return JsonResponse({'error': 'Colab API Error'}, status=500)
+                print(f"Colab 错误: {response.text}")
+                return JsonResponse({'error': 'Colab API 生成失败，请检查 ngrok 地址是否过期'}, status=500)
 
-            # 2. 处理返回的音频
-            # 情况 A: Colab 直接返回二进制 WAV/MP3 文件流
-            audio_content = response.content
-            
-            # 情况 B (Gradio常见): 返回 JSON 包含 Base64 或 远程 URL
-            # 需要你根据实际情况解析 response.json()
-            
-            # 3. 保存到本地 Django Media
+            # 3. 保存音频文件
             file_name = f"{uuid.uuid4()}.wav"
             record = AudioRecord(text=text)
-            # 将二进制数据保存为文件
-            record.audio_file.save(file_name, ContentFile(audio_content))
+            
+            # response.content 包含二进制音频数据
+            record.audio_file.save(file_name, ContentFile(response.content))
             record.save()
 
-            # 4. 返回本地 URL 给前端
+            # 4. 返回完整 URL
+            full_url = request.build_absolute_uri(record.audio_file.url)
+            
             return JsonResponse({
+                'id': record.id,
                 'text': text,
-                'audio_url': request.build_absolute_uri(record.audio_file.url)
+                'audio_url': full_url,
+                'created_at': record.created_at
             })
 
         except Exception as e:
-            print(e)
+            print(f"后端异常: {e}")
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Method not allowed'}, status=405)
