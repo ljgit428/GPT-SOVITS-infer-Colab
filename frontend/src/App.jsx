@@ -29,7 +29,8 @@ function App() {
     try {
       // 注意：这里需要把 lang 传给后端
       // 你需要在 Django 的 views.py 里接收 text_lang 参数
-      const response = await fetch('http://127.0.0.1:8000/api/generate/', {
+      // 注意：这里必须是你电脑的局域网 IP，不能是 localhost
+      const response = await fetch('http://10.0.0.9:8000/api/generate/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
