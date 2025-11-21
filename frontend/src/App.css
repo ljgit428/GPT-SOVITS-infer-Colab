@@ -1,73 +1,239 @@
+/* frontend/src/App.css */
+
+/* 全局背景色定义 */
+:root {
+  --primary-color: #646cff;
+  --bg-gradient: radial-gradient(circle at top left, #1e202e 0%, #111218 100%);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --text-color: #e0e0e0;
+  --border-color: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: var(--bg-gradient);
+  color: var(--text-color);
+}
+
+/* --- 1. 容器：超级居中，最大宽度增加 --- */
 .container {
-  max-width: 800px;
+  max-width: 1400px;
+  /* 增加宽度到 1400px，利用宽屏 */
+  width: 90%;
+  /* 移动端保持间距 */
   margin: 0 auto;
-  padding: 2rem;
+  /* 核心：水平居中 */
+  padding-top: 4rem;
+  /* 顶部留白 */
+  padding-bottom: 4rem;
+
   display: flex;
+  /* 默认单列（手机） */
   flex-direction: column;
   gap: 2rem;
 }
 
-h1 {
+/* --- 2. 标题区域 --- */
+.header-area {
   text-align: center;
-  color: #fff;
+  margin-bottom: 1rem;
 }
 
-.input-area {
+h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+/* --- 3. 核心布局：网格系统 --- */
+/* 当屏幕大于 1024px 时，开启双栏布局 */
+@media (min-width: 1024px) {
+  .container {
+    display: grid;
+    /* 改为 1:1 等宽，或者 7:5，视觉更平衡 */
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    /* 强制两边卡片等高 */
+  }
+
+  .header-area {
+    grid-column: 1 / -1;
+    /* 标题横跨两列 */
+  }
+}
+
+/* --- 4. 卡片样式：更强的质感 --- */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(24px);
+  /* 毛玻璃 */
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background: #333;
-  padding: 1.5rem;
+  min-height: 600px;
+  /* 增加最小高度，看起来更充实 */
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* --- 5. 输入控件优化 --- */
+.controls {
+  margin-bottom: 1.5rem;
+}
+
+select {
+  width: 100%;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  padding: 12px 16px;
   border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
 }
 
 textarea {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  background: #1a1a1a;
-  color: white;
-  border: 1px solid #444;
-  font-size: 16px;
-  resize: vertical;
+  flex-grow: 1;
+  /* 自动填满剩余垂直空间 */
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #f3f4f6;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  resize: none;
+  /* 禁止手动拉伸，破坏布局 */
+  box-sizing: border-box;
+  min-height: 200px;
 }
 
-button {
-  align-self: flex-end;
-  background-color: #646cff;
-  color: white;
+textarea:focus {
+  border-color: var(--primary-color);
+  background: rgba(0, 0, 0, 0.3);
+  outline: none;
 }
 
-button:disabled {
-  background-color: #444;
+/* --- 6. 发送按钮：悬浮感 --- */
+.btn-primary {
+  margin-top: 1.5rem;
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(to right, #6366f1, #a855f7);
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  transform: none;
   cursor: not-allowed;
+  background: #374151;
+  box-shadow: none;
 }
 
-.history-area {
-  margin-top: 1rem;
+/* --- 7. 历史记录列表 --- */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clear-btn {
+  font-size: 0.9rem;
+  color: #f87171;
+  background: none;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-btn:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: #f87171;
 }
 
 .record-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-right: -10px;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 transparent;
 }
 
-.record-card {
-  background: #2a2a2a;
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #646cff;
-  text-align: left;
+.record-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
+}
+
+.record-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.record-meta {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.lang-tag {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
 }
 
 .record-text {
-  margin: 0 0 10px 0;
-  color: #ddd;
-  font-size: 1.1rem;
+  color: #e5e7eb;
+  line-height: 1.5;
+  margin-bottom: 1rem;
 }
 
-.record-audio {
+audio {
   width: 100%;
-  height: 40px;
+  height: 36px;
+  border-radius: 8px;
 }

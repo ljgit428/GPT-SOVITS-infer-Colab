@@ -14,6 +14,8 @@ def generate_audio(request):
         try:
             data = json.loads(request.body)
             text = data.get('text', '')
+            # 👇 获取前端传来的 text_lang，如果没有则默认 auto
+            text_lang = data.get('text_lang', 'auto')
 
             if not text:
                 return JsonResponse({'error': '内容不能为空'}, status=400)
@@ -23,7 +25,7 @@ def generate_audio(request):
             # 如果需要更精细的控制（参考音频、语种等），需要在这里添加更多参数
             params = {
                 "text": text,
-                "text_lang": "auto",      # 强制输入为中文，可根据需要修改
+                "text_lang": text_lang,      # 使用前端传来的语言参数
                 "top_k": 5,
                 "top_p": 1,
                 "temperature": 1,
