@@ -12,9 +12,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# Read environment variable
+COLAB_API_BASE = os.getenv('COLAB_API_BASE', '')
 
 
 # Quick-start development settings - unsuitable for production

@@ -6,11 +6,7 @@ import requests
 import json
 import uuid
 
-# ==========================================
-# !!! 每次 Colab 启动后，将 ngrok 生成的地址填在这里 !!!
-# 注意：不要带最后的斜杠 /
-COLAB_API_BASE = "https://xxxx-xxxx.ngrok-free.app" 
-# ==========================================
+from django.conf import settings
 
 @csrf_exempt
 def generate_audio(request):
@@ -27,18 +23,21 @@ def generate_audio(request):
             # 如果需要更精细的控制（参考音频、语种等），需要在这里添加更多参数
             params = {
                 "text": text,
-                "text_lang": "zh",      # 强制输入为中文，可根据需要修改
-                "prompt_lang": "zh",    # 提示语语言
+                "text_lang": "auto",      # 强制输入为中文，可根据需要修改
                 "top_k": 5,
                 "top_p": 1,
                 "temperature": 1,
                 # 如果你的模型必须需要参考音频路径，需要在这里传入 ref_audio_path
             }
             
-            print(f"正在请求 Colab: {COLAB_API_BASE}/tts ... 内容: {text}")
+            api_base = settings.COLAB_API_BASE
+            if not api_base:
+                return JsonResponse({'error': '未配置 Colab 地址，请检查 .env 文件'}, status=500)
+
+            print(f"正在请求 Colab: {api_base}/tts ... 内容: {text}")
             
             # 2. 发送 GET 请求到 Colab (GPT-SoVITS 标准接口通常是 /tts)
-            response = requests.get(f"{COLAB_API_BASE}/tts", params=params, timeout=120)
+            response = requests.get(f"{api_base}/tts", params=params, timeout=120)
 
             if response.status_code != 200:
                 print(f"Colab 错误: {response.text}")
