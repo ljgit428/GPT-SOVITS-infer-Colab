@@ -6,6 +6,7 @@ import requests
 import json
 import uuid
 
+import re  # 👈 1. 记得导入正则模块
 from django.conf import settings
 
 @csrf_exempt
@@ -16,9 +17,24 @@ def generate_audio(request):
             text = data.get('text', '')
             # 👇 获取前端传来的 text_lang，如果没有则默认 auto
             text_lang = data.get('text_lang', 'auto')
+            
+            # 👇 2. 获取前端传来的开关参数 (默认为 False)
+            ignore_brackets = data.get('ignore_brackets', False)
 
-            if not text:
-                return JsonResponse({'error': '内容不能为空'}, status=400)
+            # 👇 3. 添加过滤逻辑 (必须在判断 if not text 之前)
+            if ignore_brackets and text:
+                print(f"原始文本: {text}")
+                # 正则解释：
+                # \(.*?\)   -> 匹配英文小括号及内容
+                # （.*?）   -> 匹配中文小括号及内容
+                # \[.*?\]   -> 匹配英文中括号及内容
+                # 【.*?】   -> 匹配中文中括号及内容
+                pattern = r'\(.*?\)|（.*?）|\[.*?\]|【.*?】'
+                text = re.sub(pattern, '', text)
+                print(f"过滤后文本: {text}")
+
+            if not text.strip():
+                return JsonResponse({'error': '内容不能为空（或过滤后为空）'}, status=400)
 
             # 1. 构造 GPT-SoVITS api_v2 的参数
             # 注意：这里假设模型已经加载了默认的参考音频，或者不需要强制指定参考音频

@@ -12,6 +12,8 @@ function App() {
 
   // 新增：语言选择
   const [lang, setLang] = useState('auto')
+  // 新增：忽略括号内容开关
+  const [ignoreBrackets, setIgnoreBrackets] = useState(true)
 
   const audioRef = useRef(null)
 
@@ -32,7 +34,8 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: text,
-          text_lang: lang // 传递语言参数
+          text_lang: lang, // 传递语言参数
+          ignore_brackets: ignoreBrackets // 传给后端
         }),
       })
 
@@ -90,6 +93,18 @@ function App() {
             <option value="en">英文 (English)</option>
             <option value="all_zh">强制中文发音</option>
           </select>
+        </div>
+
+        <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#aaa', fontSize: '0.9rem' }}>
+            <input
+              type="checkbox"
+              checked={ignoreBrackets}
+              onChange={e => setIgnoreBrackets(e.target.checked)}
+              style={{ marginRight: '8px', width: 'auto' }}
+            />
+            忽略括号内容 (如：[笑声]、(旁白))
+          </label>
         </div>
 
         <textarea
