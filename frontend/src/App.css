@@ -1,0 +1,216 @@
+:root {
+  --primary-color: #646cff;
+  --bg-gradient: radial-gradient(circle at top left, #1e202e 0%, #111218 100%);
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --text-color: #e0e0e0;
+  --border-color: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: var(--bg-gradient);
+  color: var(--text-color);
+}
+
+.container {
+  max-width: 1400px;
+  width: 90%;
+  margin: 0 auto;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header-area {
+  position: relative;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .header-area {
+    grid-column: 1 / -1;
+  }
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.controls {
+  margin-bottom: 1.5rem;
+}
+
+select {
+  width: 100%;
+  background: #1f2937;
+  color: white;
+  border: 1px solid #374151;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #f3f4f6;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  resize: none;
+  box-sizing: border-box;
+  min-height: 200px;
+}
+
+textarea:focus {
+  border-color: var(--primary-color);
+  background: rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.btn-primary {
+  margin-top: 1.5rem;
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(to right, #6366f1, #a855f7);
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  transform: none;
+  cursor: not-allowed;
+  background: #374151;
+  box-shadow: none;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clear-btn {
+  font-size: 0.9rem;
+  color: #f87171;
+  background: none;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-btn:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: #f87171;
+}
+
+.record-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-right: -10px;
+  padding-right: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 transparent;
+}
+
+.record-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
+}
+
+.record-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.record-meta {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.lang-tag {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.record-text {
+  color: #e5e7eb;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+audio {
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+}
