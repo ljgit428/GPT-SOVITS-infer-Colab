@@ -49,7 +49,7 @@ h1 {
   .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: stretch;
+    align-items: start;
   }
 
   .header-area {

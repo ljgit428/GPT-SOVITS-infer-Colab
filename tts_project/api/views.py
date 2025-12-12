@@ -29,6 +29,9 @@ def generate_audio(request):
             text = data.get('text', '')
             text_lang = data.get('text_lang', 'auto')
             ignore_brackets = data.get('ignore_brackets', False)
+            
+            if text_lang.lower() == 'en' or text_lang.lower() == 'english':
+                text = text.replace('-', ' ') 
 
             if ignore_brackets and text:
                 pattern = r'\(.*?\)|（.*?）|\[.*?\]|【.*?】'

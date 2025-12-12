@@ -9,7 +9,7 @@ function App() {
     const saved = localStorage.getItem('tts_history')
     return saved ? JSON.parse(saved) : []
   })
-  const [lang, setLang] = useState('auto')
+  const [lang, setLang] = useState('en')
   const [ignoreBrackets, setIgnoreBrackets] = useState(true)
   const [uiLang, setUiLang] = useState(() => {
     const saved = localStorage.getItem('ui_lang')
@@ -64,7 +64,7 @@ function App() {
 
         if (audioRef.current) {
           audioRef.current.src = data.audio_url
-          audioRef.current.play().catch(e => console.log("Auto-play blocked:", e))
+          //audioRef.current.play().catch(e => console.log("Auto-play blocked:", e))
         }
         setText('')
       } else {
@@ -87,6 +87,11 @@ function App() {
 
   const toggleLanguage = () => {
     setUiLang(prev => prev === 'en' ? 'zh' : 'en')
+  }
+
+  const deleteHistoryItem = (id) => {
+    const newHistory = history.filter(item => item.id !== id)
+    setHistory(newHistory)
   }
 
   return (
@@ -128,11 +133,11 @@ function App() {
 
         <div className="controls">
           <select value={lang} onChange={(e) => setLang(e.target.value)}>
-            <option value="auto">{t('languageSelection.auto')}</option>
+            <option value="en">{t('languageSelection.en')}</option>
             <option value="zh">{t('languageSelection.zh')}</option>
             <option value="ja">{t('languageSelection.ja')}</option>
-            <option value="en">{t('languageSelection.en')}</option>
             <option value="all_zh">{t('languageSelection.allZh')}</option>
+            <option value="auto">{t('languageSelection.auto')}</option>
           </select>
         </div>
 
@@ -185,6 +190,23 @@ function App() {
             <div key={item.id} className="record-item">
               <div className="record-meta">
                 <span>[{t(`langDisplay.${item.lang}`) || item.lang}] {item.date}</span>
+                <button 
+                  onClick={() => deleteHistoryItem(item.id)}
+                  style={{
+                    background: 'transparent',
+                    border: '1px solid rgba(248, 113, 113, 0.5)',
+                    color: '#f87171',
+                    borderRadius: '4px',
+                    padding: '2px 8px',
+                    fontSize: '0.75rem',
+                    cursor: 'pointer',
+                    marginLeft: '10px'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = 'rgba(248, 113, 113, 0.1)'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                >
+                  {t('delete')}
+                </button>
               </div>
               <div className="record-text">{item.text}</div>
               <audio controls src={item.audioUrl} controlsList="nodownload" />
